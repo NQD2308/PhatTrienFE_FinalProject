@@ -1,0 +1,94 @@
+<div id="page-wrapper" style="min-height: 1253px">
+  <h3>Create Item</h3>
+  <form
+    [formGroup]="insertFrm"
+    style="margin-top: 40px"
+    (ngSubmit)="onSubmit()"
+  >
+    <!-- <div class="form-group">
+      <input
+        type="text"
+        class="form-control"
+        from
+        aria-describedby="UserNameHelp"
+        placeholder="Enter ID"
+        formControlName="id"
+      />
+    </div> -->
+    <div class="form-group">
+      <input
+        type="text"
+        class="form-control"
+        from
+        aria-describedby="UserNameHelp"
+        placeholder="Enter name"
+        formControlName="name"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="text"
+        class="form-control"
+        from
+        aria-describedby="UserNameHelp"
+        placeholder="Enter image path"
+        formControlName="img"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="text"
+        class="form-control"
+        from
+        aria-describedby="UserNameHelp"
+        placeholder="Enter quantity"
+        formControlName="quantity"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="text"
+        class="form-control"
+        from
+        aria-describedby="UserNameHelp"
+        placeholder="Enter description"
+        formControlName="description"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="text"
+        class="form-control"
+        from
+        aria-describedby="UserNameHelp"
+        placeholder="Enter price"
+        formControlName="price"
+      />
+    </div>
+    <div class="form-group">
+      <input
+        type="text"
+        class="form-control"
+        from
+        aria-describedby="UserNameHelp"
+        placeholder="Enter houseware"
+        formControlName="houseware"
+      />
+    </div>
+    <button class="btn btn-primary" [disabled]="!insertFrm.valid">
+      Insert
+    </button>
+  </form>
+  <button>
+    >
+    <a routerLink="/" routerLinkActive="active" ariaCurrentWhenActive="page"
+      >back</a
+    >
+  </button>
+  <!-- <ul>
+    @for(it of items; track it.id) {
+    <li>{{it.id}} - {{it.name}} - {{it.description}}</li>
+  }
+  </ul> -->
+  <router-outlet></router-outlet>
+</div>

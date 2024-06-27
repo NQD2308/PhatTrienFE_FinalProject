@@ -1,0 +1,70 @@
+<div id="page-wrapper" style="min-height: 1253px">
+  <h2 class="form-title">Create user</h2>
+          <form
+            [formGroup]="userFrm"
+            class="register-form"
+            (ngSubmit)="createUser()"
+          >
+            <!-- <div class="form-group">
+              <label for="name"
+                ><i class="zmdi zmdi-account material-icons-name"></i
+              ></label>
+              <input
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Your Name"
+                formControlName="name"
+              />
+            </div> -->
+            
+            <div class="form-group">
+              <label for="email"><i class="zmdi zmdi-email"></i></label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Your Email"
+                formControlName="email"
+              />
+              @if((userFrm.get('email').invalid) && (userFrm.get('email').dirty||userFrm.get('email').touched)){
+                <div>                                          
+                  <small *ngIf="userFrm.get('email').hasError('required')" class="text-danger">Email is required.</small>                                           
+                  <small *ngIf="userFrm.get('email').hasError('email')" class="text-danger">Email is Invalid.</small>                                           
+                </div>
+                }
+            </div>
+            <div class="form-group">
+              <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+              <input
+                type="password"
+                name="pass"
+                id="pass"
+                placeholder="Password"
+                formControlName="password"
+              />
+            </div>
+            <div class="form-group">
+              <label for="re-pass"
+                ><i class="zmdi zmdi-lock-outline"></i
+              ></label>
+              <input
+                type="password"
+                name="re_pass"
+                id="re_pass"
+                placeholder="Confirm password"
+                formControlName="re_password"
+              />
+            </div>
+            <div *ngIf="passwordMismatch">
+              <small class="text-danger">Passwords do not match.</small>
+            </div>
+            <div class="form-group form-button">
+              <button class="btn btn-primary">
+                Register
+              </button>
+            </div>
+          </form>
+</div>
+
+<router-outlet></router-outlet>
