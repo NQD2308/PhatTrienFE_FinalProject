@@ -9,7 +9,6 @@ import {
 import { LoginComponent } from '../login/login.component';
 import {
   Firestore,
-  addDoc,
   collection,
   collectionData,
   getDocs,
@@ -46,6 +45,9 @@ export class SignupComponent {
   members: Observable<Member[]>;
   members2: Member[] = [];
   aCollection = collection(this.firestore, 'members');
+  fauthService: AuthService = inject(AuthService);
+  passwordMismatch: boolean = false;
+  userFrm: any;
   config: any;
 
   memberSrv: MemberService = inject(MemberService);
@@ -54,8 +56,10 @@ export class SignupComponent {
   insertFrm: any;
 
   constructor(private route: ActivatedRoute, private router: Router) {
-    this.members = collectionData(this.aCollection, { idField: 'id' }) as Observable<Member[]>;
-    this.members.subscribe(data => {
+    this.members = collectionData(this.aCollection, {
+      idField: 'id',
+    }) as Observable<Member[]>;
+    this.members.subscribe((data) => {
       this.members2 = data;
       console.log(data);
       this.updateConfig();
@@ -68,7 +72,7 @@ export class SignupComponent {
     });
 
     this.config = {
-      totalMember: this.members2.length
+      totalMember: this.members2.length,
     };
   }
 
@@ -80,14 +84,19 @@ export class SignupComponent {
       password: ['', [Validators.required]],
       re_password: ['', [Validators.required]],
     });
+
+    // this.memberSrv.getMembers().subscribe((data: Member[]) => {
+    //   this.items = data;
+    // });
   }
 
   updateConfig(): void {
     this.config.totalMember = this.members2.length;
   }
 
+  // Increatement ID
   async getMaxId(): Promise<number> {
-    const q = query(this.aCollection, orderBy("id", "desc"), limit(1));
+    const q = query(this.aCollection, orderBy('id', 'desc'), limit(1));
     const querySnapshot = await getDocs(q);
     let maxId = 0;
     querySnapshot.forEach((doc) => {
@@ -98,53 +107,6 @@ export class SignupComponent {
     });
     return maxId + 1;
   }
-
-  // async onSubmit() {
-  //   if (this.insertFrm.valid) {
-  //     const { password, confirmPassword } = this.insertFrm.value;
-
-  //     if (password !== confirmPassword) {
-  //       console.error("Passwords do not match!");
-  //       return;
-  //     } else {
-  //       console.error("Passwords do match!");
-  //     }
-
-  //     const maxId = await this.getMaxId();
-  //     const newId = maxId + 1;
-
-  //     const member = new Member(
-  //       newId,
-  //       this.insertFrm.controls["name"].value,
-  //       this.insertFrm.controls["email"].value,
-  //       this.insertFrm.controls["password"].value,
-  //     );
-
-  //     this.memberSrv.insertMember(member).subscribe(data => {
-  //       console.log("insert form: ", data);
-  //       this.router.navigate(['/member']);
-  //     });
-
-  //     const newDocRef = await addDoc(this.aCollection, member.toPlainObject());
-  //     console.log('New document added with ID:', newDocRef.id);
-
-  //     console.log("put success firebase");
-  //   }
-  // }
-
-  fauthService: AuthService = inject(AuthService);
-  // router: Router = inject(Router);
-  // fb: FormBuilder = inject(FormBuilder);
-  passwordMismatch: boolean = false; 
-  userFrm: any;
-
-  // constructor() {
-  //   this.userFrm = this.fb.group({
-  //     email: ['', [Validators.required, Validators.email]],
-  //     password: ['', [Validators.required]],
-  //     re_password: [''],
-  //   });
-  // }
 
   async createUser() {
     const password = this.userFrm.controls.password.value;
@@ -160,32 +122,26 @@ export class SignupComponent {
     this.insertFrm.patchValue({
       name: null,
       email: this.userFrm.controls.email.value,
-      password: password
+      password: password,
     });
 
     const newId = await this.getMaxId();
     const member = new Member(
-            // this.insertFrm.controls["id"].value,
-            newId,
-            // this.userFrm.controls.email.value,
-            // password,
-            this.insertFrm.controls["name"].value,
-            this.insertFrm.controls["email"].value,
-            this.insertFrm.controls["password"].value,
-          );
+      newId,
+      this.insertFrm.controls['name'].value,
+      this.insertFrm.controls['email'].value,
+      this.insertFrm.controls['password'].value
+    );
 
     if (this.userFrm.valid) {
       this.fauthService
-      .CreateAccount(
-        this.userFrm.controls.email.value,
-        password  
-      )
-      .then((user) => {
-        console.log(user);
-        this.router.navigate(['/auth']);
-      });
+        .CreateAccount(this.userFrm.controls.email.value, password)
+        .then((user) => {
+          console.log(user);
+          this.router.navigate(['/auth']);
+        });
     }
-    
+
     const newDocRef = doc(this.aCollection, newId.toString());
     await setDoc(newDocRef, member.toPlainObject());
     console.log('New document added with ID:', newDocRef.id);

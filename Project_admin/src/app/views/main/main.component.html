@@ -156,6 +156,17 @@
                             aria-label="CSS grade: activate to sort column ascending"
                             style="width: 91px"
                           >
+                            STATUS
+                          </th>
+                          <th
+                            class="sorting"
+                            tabindex="0"
+                            aria-controls="dataTables-example"
+                            rowspan="1"
+                            colspan="1"
+                            aria-label="CSS grade: activate to sort column ascending"
+                            style="width: 91px"
+                          >
                             active
                           </th>
                         </tr>
@@ -171,17 +182,21 @@
                           <td>{{ item.description }}</td>
                           <td>{{ item.quantity }}</td>
                           <td class="center">${{ item.price }}</td>
+                          <td class="center" >
+                            <div style="display: flex; justify-content: center;">
+                              <span [ngClass]="item.quantity == 0 ? 'sold-out' : 'stocking'">{{ item.quantity == 0 ? 'Sold Out' : 'Stocking' }}</span>
+                            </div>
+                            </td>
                           <td class="center">
                             <div style="display: flex; gap: 10px">
-                              <button>
-                                <a
+                              <button class="btn_delete" (click)="delete(item.id)">Delete</button>
+                              <a
+                                  class="btn_update"
                                   [routerLink]="['/item-update', item.id]"
                                   routerLinkActive="active"
                                   ariaCurrentWhenActive="page"
                                   >Update</a
                                 >
-                              </button>
-                              <button (click)="delete(item.id)">Delete</button>
                             </div>
                           </td>
                         </tr>

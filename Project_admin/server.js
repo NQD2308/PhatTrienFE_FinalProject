@@ -93,21 +93,30 @@
 
 const express = require("express");
 const cors = require("cors");
+const router = express.Router();
 const app = express();
 const PORT = 8000;
 
 app.use(express.json()); // Middleware để parse JSON body
 app.use(cors()); // CORS middleware để cho phép cross-origin requests
 
-let items = [
-  { name: "lilly", id: "id1" },
-  { name: "Oscar", id: "id2" },
-];
+// let items = [
+//   { name: "lilly", id: "id1" },
+//   { name: "Oscar", id: "id2" },
+// ]; 
+
+const db = require('./config');
+const collection = db.collection('members');
 
 // Route để lấy danh sách các items
-app.get("/api/items", (req, res) => {
-  console.log("GET /api/items");
-  res.json(items);
+app.get("/auth", async  (req, res) => {
+  try {
+    const snapshot = await collection.get();
+    const members = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(members);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // Route để thêm một item mới
